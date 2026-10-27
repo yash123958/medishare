@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Track Request #{{ req.id }} - MediShare</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+body {
+    background: linear-gradient(135deg, #e3f2fd, #fce4ec);
+    font-family: 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 50px;
+}
+
+.track-box {
+    background: white;
+    padding: 35px;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    margin-top: 40px;
+}
+
+.step {
+    text-align: center;
+    flex: 1;
+}
+
+.circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    margin: auto;
+    line-height: 48px;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    transition: all .3s;
+}
+
+.active { 
+    background: #0d6efd; 
+    box-shadow: 0 0 0 5px rgba(13, 110, 253, 0.25);
+}
+
+.done { 
+    background: #28a745; 
+}
+
+.line {
+    height: 4px;
+    background: #cbd5e1;
+    flex: 1;
+    margin-top: -20px;
+}
+
+.line.done {
+    background: #28a745;
+}
+
+.details-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 30px;
+}
+
+.back-btn {
+    text-decoration: none;
+    color: #64748b;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.back-btn:hover {
+    color: #0d6efd;
+}
+</style>
+
+</head>
+
+<body>
+
+{% include 'navbar.html' %}
+
+<div class="container">
+
+<div class="row justify-content-center">
+<div class="col-lg-10">
+
+<div class="track-box">
+
+<a href="{% if request.user.is_superuser %}/admin-dashboard/{% elif request.user.role == 'NGO' %}/ngo/{% else %}/dashboard/{% endif %}" class="back-btn">
+    ← Back to Dashboard
+</a>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0 fw-bold">📦 Track Medicine Request</h4>
+    <span class="badge {% if req.status == 'DELIVERED' %}bg-success{% elif req.status == 'REJECTED' %}bg-danger{% else %}bg-primary{% endif %} px-3 py-2 fs-6">
+        {{ req.get_status_display }}
+    </span>
+</div>
+
+<p class="mb-1"><strong>Medicine:</strong> 💊 {{ req.donation.medicine_name }}</p>
+<p class="mb-3"><strong>Status:</strong> {{ req.status }}</p>
+
+{% if req.status == 'REJECTED' %}
+    <div class="alert alert-danger mt-4">
+        <strong>Request Rejected:</strong> This medicine request was reviewed and could not be approved by the safety administration.
+    </div>
+{% else %}
+    <!-- Pipeline Stepper -->
+    <div class="d-flex align-items-center mt-5 mb-4">
+
+        <!-- 1: Requested -->
+        <div class="step">
+            <div class="circle {% if req.status == 'REQUESTED' %}active{% else %}done{% endif %}">
+                {% if req.status != 'REQUESTED' %}✓{% else %}1{% endif %}
+            </div>
+            <p class="mt-2 mb-0 fw-semibold">Requested</p>
+            <small class="text-muted">By NGO</small>
+        </div>
+
+        <div class="line {% if req.status != 'REQUESTED' %}done{% endif %}"></div>
+
+        <!-- 2: Approved -->
+        <div class="step">
+            <div class="circle {% if req.status == 'APPROVED' %}active{% elif req.status in 'PACKED SHIPPED OUT_FOR_DELIVERY DELIVERED' %}done{% endif %}">
+                {% if req.status in 'PACKED SHIPPED OUT_FOR_DELIVERY DELIVERED' %}✓{% else %}2{% endif %}
+            </div>
+            <p class="mt-2 mb-0 fw-semibold">Approved</p>
+            <small class="text-muted">Admin Verified</small>
+        </div>
+
+        <div class="line {% if req.status in 'PACKED SHIPPED OUT_FOR_DELIVERY DELIVERED' %}done{% endif %}"></div>
+
+        <!-- 3: Packed -->
+        <div class="step">
+            <div class="circle {% if req.status == 'PACKED' %}active{% elif req.status in 'SHIPPED OUT_FOR_DELIVERY DELIVERED' %}done{% endif %}">
+                {% if req.status in 'SHIPPED OUT_FOR_DELIVERY DELIVERED' %}✓{% else %}3{% endif %}
+            </div>
+            <p class="mt-2 mb-0 fw-semibold">Packed</p>
+            <small class="text-muted">Sealed for transit</small>
+        </div>
+
+        <div class="line {% if req.status in 'SHIPPED OUT_FOR_DELIVERY DELIVERED' %}done{% endif %}"></div>
+
+        <!-- 4: Shipped / Out for Delivery -->
+        <div class="step">
+            <div class="circle {% if req.status == 'SHIPPED' or req.status == 'OUT_FOR_DELIVERY' %}active{% elif req.status == 'DELIVERED' %}done{% endif %}">
+                {% if req.status == 'DELIVERED' %}✓{% else %}4{% endif %}
+            </div>
+            <p class="mt-2 mb-0 fw-semibold">Shipped</p>
+            <small class="text-muted">Out for delivery</small>
+        </div>
+
+        <div class="line {% if req.status == 'DELIVERED' %}done{% endif %}"></div>
+
+        <!-- 5: Delivered -->
+        <div class="step">
+            <div class="circle {% if req.status == 'DELIVERED' %}done active{% endif %}">
+                {% if req.status == 'DELIVERED' %}✓{% else %}5{% endif %}
+            </div>
+            <p class="mt-2 mb-0 fw-semibold">Delivered</p>
+            <small class="text-muted">Received</small>
+        </div>
+
+    </div>
+{% endif %}
+
+<!-- Consignment Details -->
+<div class="details-card">
+    <h6 class="fw-bold mb-3">Order Information</h6>
+    <div class="row g-3">
+        <div class="col-md-3 col-6">
+            <small class="text-muted d-block">Medicine</small>
+            <strong>{{ req.donation.medicine_name }}</strong>
+        </div>
+        <div class="col-md-3 col-6">
+            <small class="text-muted d-block">Quantity</small>
+            <strong>{{ req.quantity }} units</strong>
+        </div>
+        <div class="col-md-3 col-6">
+            <small class="text-muted d-block">Requesting NGO</small>
+            <strong>{{ req.ngo.ngo_name|default:req.ngo.username }}</strong>
+        </div>
+        <div class="col-md-3 col-6">
+            <small class="text-muted d-block">Origin City</small>
+            <strong>📍 {{ req.donation.city }}</strong>
+        </div>
+        <div class="col-md-6 col-12">
+            <small class="text-muted d-block">Stated Clinical Need</small>
+            <span>{{ req.reason|default:"General health distribution" }}</span>
+        </div>
+        <div class="col-md-3 col-6">
+            <small class="text-muted d-block">Expiry Date</small>
+            <span>{{ req.donation.expiry_date }}</span>
+        </div>
+        <div class="col-md-3 col-6">
+            <small class="text-muted d-block">Request Date</small>
+            <span>{{ req.created_at|date:"M d, Y" }}</span>
+        </div>
+    </div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

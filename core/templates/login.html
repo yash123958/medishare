@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediShare Login</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+*{box-sizing:border-box;margin:0}
+body{font-family:Arial, system-ui, sans-serif;background:#fff}
+.page{display:flex;min-height:100vh}
+
+.side{
+    width:50%;
+    background:linear-gradient(145deg,#079669,#075fc4);
+    color:white;
+    padding:45px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+.logo{font-size:22px;font-weight:bold;text-decoration:none;color:white;}
+.side h1{font-size:40px;max-width:500px;line-height:1.2;}
+.side p{font-size:17px;max-width:500px;line-height:1.5;opacity:.95;}
+
+.form{
+    width:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px;
+}
+
+.box{width:100%;max-width:400px}
+h2{font-size:30px;margin-bottom:8px;color:#1e293b;}
+.sub{color:#64748b;margin-bottom:25px}
+
+label{
+    display:block;
+    margin:10px 0 6px;
+    font-size:13px;
+    color:#555;
+    font-weight:600;
+}
+
+.input-wrap{
+    position:relative;
+    margin-bottom:12px;
+}
+
+input{
+    width:100%;
+    padding:13px;
+    border:1px solid #ddd;
+    border-radius:9px;
+    outline:none;
+    font-size:14px;
+}
+
+input:focus{border-color:#0d6efd;}
+
+button{
+    width:100%;
+    padding:13px;
+    margin-top:18px;
+    border:0;
+    border-radius:9px;
+    background:#0969d9;
+    color:white;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:background .2s;
+}
+
+button:hover{background:#075bbd}
+
+.error{
+    color:#dc2626;
+    background:#fee2e2;
+    padding:10px;
+    border-radius:8px;
+    margin-top:14px;
+    font-size:13px;
+}
+
+.login{
+    text-align:center;
+    margin-top:20px;
+    font-size:13px;
+    color:#64748b;
+}
+
+.login a{color:#0969d9;text-decoration:none;font-weight:600;}
+.login a:hover{text-decoration:underline;}
+
+@media(max-width:800px){
+    .page{flex-direction:column}
+    .side,.form{width:100%}
+    .side{min-height:280px;padding:30px 25px;}
+    .side h1{font-size:28px;}
+    .form{padding:30px 20px;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="side">
+        <a href="/" class="logo">
+            💊 MediShare
+        </a>
+
+        <div>
+            <h1>Making medicines reach those who need them.</h1>
+            <p>
+                Donate unused medicines or help distribute
+                them to people in need.
+            </p>
+        </div>
+
+        <small style="opacity:.8;">
+            Together, we can make a difference.
+        </small>
+    </div>
+
+    <div class="form">
+        <div class="box">
+
+            <h2>Welcome back</h2>
+            <p class="sub">
+                Login to continue to MediShare.
+            </p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div style="background:{% if message.tags == 'error' %}#fee2e2{% elif message.tags == 'success' %}#dcfce7{% else %}#e0f2fe{% endif %}; color:{% if message.tags == 'error' %}#b91c1c{% elif message.tags == 'success' %}#15803d{% else %}#0369a1{% endif %}; border:1px solid {% if message.tags == 'error' %}#fecaca{% elif message.tags == 'success' %}#bbf7d0{% else %}#bae6fd{% endif %}; border-radius:9px; padding:12px 14px; margin-bottom:16px; font-size:13px; display:flex; align-items:center; gap:8px;">
+                        <span>{% if message.tags == 'error' %}⚠️{% elif message.tags == 'success' %}✓{% else %}ℹ️{% endif %}</span>
+                        <div>{{ message }}</div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if error %}
+                <div class="error" style="margin-bottom:16px; margin-top:0;">⚠ {{ error }}</div>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <label>Username or Email Address</label>
+                <div class="input-wrap">
+                    <input
+                        type="text"
+                        name="username"
+                        value="{{ login_input|default:'' }}"
+                        placeholder="Enter username or registered email"
+                        required
+                        autofocus
+                    >
+                </div>
+
+                <label>Password</label>
+                <div class="input-wrap" style="position:relative;">
+                    <input
+                        type="password"
+                        name="password"
+                        id="loginPassword"
+                        placeholder="Enter your password"
+                        required
+                    >
+                    <i class="bi bi-eye-slash" id="toggleLoginPassword" style="position:absolute; right:14px; top:14px; cursor:pointer; font-size:18px; color:#64748b;"></i>
+                </div>
+
+                <button type="submit">
+                    Login to MediShare
+                </button>
+            </form>
+
+            <div class="login">
+                Don't have an account?
+                <a href="/register/">Create account</a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+const toggleLoginPassword = document.getElementById('toggleLoginPassword');
+const loginPassword = document.getElementById('loginPassword');
+if (toggleLoginPassword && loginPassword) {
+    toggleLoginPassword.onclick = function() {
+        if (loginPassword.type === 'password') {
+            loginPassword.type = 'text';
+            toggleLoginPassword.classList.replace('bi-eye-slash', 'bi-eye');
+        } else {
+            loginPassword.type = 'password';
+            toggleLoginPassword.classList.replace('bi-eye', 'bi-eye-slash');
+        }
+    };
+}
+</script>
+
+</body>
+</html>
