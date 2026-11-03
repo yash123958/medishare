@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NGO Medicine Marketplace - MediShare</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    background: #f1f6fb;
+    padding-bottom: 60px;
+}
+
+.container { max-width: 1200px; }
+
+.ngo-header-card {
+    background: linear-gradient(135deg, #0284c7, #0f766e);
+    color: white;
+    padding: 26px 30px;
+    border-radius: 18px;
+    margin-top: 15px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 24px rgba(2, 132, 199, 0.2);
+}
+
+.stat-box {
+    background: white;
+    border-radius: 16px;
+    padding: 20px 22px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.stat-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+}
+
+.stat-icon-wrap {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: white;
+    flex-shrink: 0;
+}
+
+.filter-box {
+    background: white;
+    padding: 20px 24px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.medicine-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    padding: 22px;
+    height: 100%;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.medicine-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+    border-color: #cbd5e1;
+}
+
+.medicine-card.priority-card {
+    border-top: 4px solid #ef4444;
+}
+
+.med-img-box {
+    height: 130px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin: 12px 0;
+}
+
+.med-img-box img {
+    max-height: 100%;
+    width: auto;
+    object-fit: cover;
+}
+
+.info-line {
+    font-size: 0.88rem;
+    color: #64748b;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn-request {
+    background: linear-gradient(135deg, #0284c7, #0d9488);
+    color: white !important;
+    border: none;
+    font-weight: 600;
+    font-size: 0.88rem;
+    padding: 8px 14px;
+    border-radius: 9px;
+    transition: all 0.2s ease;
+}
+
+.btn-request:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}
+
+.empty-search {
+    background: white;
+    border: 1px dashed #cbd5e1;
+    border-radius: 16px;
+    padding: 50px 20px;
+    text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+{% include 'navbar.html' %}
+
+<div class="container py-2">
+
+<!-- NGO Header -->
+<div class="ngo-header-card d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+    <div>
+        <span class="badge bg-white text-primary fw-bold text-uppercase px-3 py-1 rounded-pill small mb-2">Verified Recipient Portal</span>
+        <h3 class="mb-1 fw-bold text-white">🏥 Medicine Procurement Marketplace</h3>
+        <p class="mb-0 opacity-90 small">
+            Logged in as <strong>{{ request.user.ngo_name|default:request.user.username }}</strong> &bull; Requisition supplies for verified patient care.
+        </p>
+    </div>
+    <div class="d-none d-md-block text-end">
+        <span class="badge bg-light text-dark px-3 py-2 border rounded-pill">
+            <i class="bi bi-shield-check text-success me-1"></i> Regulatory Clearance Active
+        </span>
+    </div>
+</div>
+
+<!-- STATS -->
+<div class="row g-3 mb-4">
+
+    <div class="col-md-4">
+        <div class="stat-box">
+            <div class="stat-icon-wrap" style="background: linear-gradient(135deg, #0284c7, #0876e8);">
+                <i class="bi bi-capsule"></i>
+            </div>
+            <div>
+                <span class="text-muted small fw-semibold text-uppercase">Available Batches</span>
+                <h3 class="fw-bold mb-0 text-dark">{{ donations|length }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-box">
+            <div class="stat-icon-wrap" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+                <i class="bi bi-alarm"></i>
+            </div>
+            <div>
+                <span class="text-muted small fw-semibold text-uppercase">Expiring Soon (&le; 7 days)</span>
+                <h3 class="fw-bold mb-0 text-danger">{{ expiring_count }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-box">
+            <div class="stat-icon-wrap" style="background: linear-gradient(135deg, #10b981, #059669);">
+                <i class="bi bi-geo-alt"></i>
+            </div>
+            <div>
+                <span class="text-muted small fw-semibold text-uppercase">Active Cities</span>
+                <h3 class="fw-bold mb-0 text-dark">{{ city_count }}</h3>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- SEARCH & FILTERS -->
+<div class="filter-box mb-4">
+    <form method="GET" class="row g-2 align-items-center" id="searchForm">
+        <div class="col-md-5">
+            <div class="input-group">
+                <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                <input
+                    id="cityInput"
+                    name="city"
+                    value="{{ request.GET.city }}"
+                    placeholder="Search medicine name, manufacturer, or city..."
+                    class="form-control border-start-0"
+                    style="border-radius: 0 10px 10px 0;">
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <select id="expiryFilter" name="expiry" class="form-select" style="border-radius: 10px;">
+                <option value="">Expiry Filter (All Batches)</option>
+                <option value="7" {% if request.GET.expiry == '7' %}selected{% endif %}>⚠ Urgent Priority (Within 7 days)</option>
+                <option value="15" {% if request.GET.expiry == '15' %}selected{% endif %}>Within 15 days</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary w-100 fw-semibold" style="background: #0876e8; border: none; border-radius: 10px; padding: 9px 16px;">
+                Apply Filters
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- MESSAGES -->
+{% for message in messages %}
+<div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} alert-dismissible fade show rounded-3 shadow-sm border-0 d-flex align-items-center gap-2 mb-4">
+    <i class="bi bi-info-circle-fill"></i>
+    <div>{{ message }}</div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endfor %}
+
+<!-- MEDICINES GRID -->
+<div class="row g-4" id="medicineList">
+
+{% for d in donations %}
+
+<div class="col-lg-4 col-md-6 med-card-item" data-name="{{ d.medicine_name|lower }}" data-city="{{ d.city|lower }}" data-days="{{ d.days_left }}">
+
+<div class="medicine-card {% if d.days_left <= 7 and d.days_left > 0 %}priority-card{% endif %}">
+
+    <div>
+        <div class="d-flex justify-content-between align-items-start gap-2">
+            <h5 class="fw-bold mb-1 text-dark">💊 {{ d.medicine_name }}</h5>
+            {% if d.days_left <= 7 and d.days_left > 0 %}
+                <span class="badge bg-danger-subtle text-danger-emphasis border border-danger-subtle py-1 px-2" style="font-size: 11px;">
+                    ⚠ Urgent ({{ d.days_left }}d left)
+                </span>
+            {% else %}
+                <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle py-1 px-2" style="font-size: 11px;">
+                    ✓ Valid
+                </span>
+            {% endif %}
+        </div>
+
+        <div class="text-muted small mb-2">
+            {% if d.batch_number %}Batch: <code>{{ d.batch_number }}</code>{% endif %}
+            {% if d.manufacturer %}&bull; {{ d.manufacturer }}{% endif %}
+        </div>
+
+        {% if d.image %}
+        <div class="med-img-box">
+            <img src="{{ d.image.url }}" alt="{{ d.medicine_name }}">
+        </div>
+        {% else %}
+        <div class="med-img-box text-muted small">
+            <i class="bi bi-capsule fs-3 me-2 text-secondary"></i> Sealed Packaging
+        </div>
+        {% endif %}
+
+        <div class="bg-light p-2 rounded-3 mb-3 border">
+            <div class="info-line"><span>Available Quantity:</span> <strong>{{ d.quantity }} units</strong></div>
+            <div class="info-line"><span>Origin City:</span> <span>📍 {{ d.city }}</span></div>
+            <div class="info-line"><span>Expiry Date:</span> <strong class="text-dark">{{ d.expiry_date }}</strong></div>
+            <div class="info-line mb-0"><span>Days Remaining:</span> <span class="fw-semibold {% if d.days_left <= 7 %}text-danger{% else %}text-success{% endif %}">{{ d.days_left }} days</span></div>
+        </div>
+
+        <!-- Badges Row -->
+        <div class="d-flex flex-wrap gap-1 mb-3">
+            {% if d.storage_conditions == 'COLD_CHAIN' %}
+                <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle" style="font-size: 11px;">❄️ Cold Chain (2°-8°C)</span>
+            {% endif %}
+
+            {% if d.prescription_required %}
+                <span class="badge bg-danger-subtle text-danger-emphasis border border-danger-subtle" style="font-size: 11px;">Rx Required</span>
+            {% else %}
+                <span class="badge bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle" style="font-size: 11px;">OTC</span>
+            {% endif %}
+
+            <span class="badge bg-light text-secondary border" style="font-size: 11px;">
+                {{ d.get_packaging_condition_display }}
+            </span>
+        </div>
+    </div>
+
+    <div class="border-top pt-3">
+        {% if d.days_left > 0 and d.quantity > 0 %}
+            <!-- Request form -->
+            <form action="{% url 'request_medicine' d.id %}" method="POST" class="mb-2">
+                {% csrf_token %}
+                <div class="input-group mb-2">
+                    <span class="input-group-text bg-light text-muted small">Units Needed</span>
+                    <input
+                        type="number"
+                        name="quantity"
+                        min="1"
+                        max="{{ d.quantity }}"
+                        value="1"
+                        class="form-control text-center"
+                        style="border-radius: 0 8px 8px 0;"
+                        required>
+                </div>
+                <input
+                    type="text"
+                    name="reason"
+                    placeholder="Stated clinical/patient purpose..."
+                    class="form-control mb-2 small"
+                    style="font-size:12px; border-radius: 8px;">
+
+                <button type="submit" class="btn btn-request w-100">
+                    <i class="bi bi-cart-plus me-1"></i> Requisition Medicine
+                </button>
+            </form>
+        {% else %}
+            <button class="btn btn-secondary w-100 mb-2 small" disabled>
+                Stock Exhausted / Expired
+            </button>
+        {% endif %}
+
+        <!-- DETAILS BUTTON -->
+        <button
+            class="btn btn-outline-secondary btn-sm w-100 rounded-2"
+            data-bs-toggle="modal"
+            data-bs-target="#m{{ d.id }}">
+            <i class="bi bi-info-circle me-1"></i> Clinical Dossier
+        </button>
+
+        {% if d.user_request %}
+        <a
+            href="{% url 'track_request' d.user_request.id %}"
+            class="btn btn-warning btn-sm w-100 mt-2 fw-semibold rounded-2">
+            📦 Track Order ({{ d.user_request.get_status_display }})
+        </a>
+        {% endif %}
+    </div>
+
+</div>
+</div>
+
+<!-- DETAILS MODAL -->
+<div class="modal fade" id="m{{ d.id }}">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content rounded-4 border-0 shadow">
+
+<div class="modal-header border-bottom">
+    <h6 class="modal-title fw-bold">💊 Clinical Dossier: {{ d.medicine_name }}</h6>
+    <button class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+
+<div class="modal-body p-3">
+    {% if d.image %}
+    <div class="text-center mb-3">
+        <img src="{{ d.image.url }}" class="img-fluid rounded-3 border" style="max-height:220px;">
+    </div>
+    {% endif %}
+
+    <div class="bg-light p-3 rounded-3 border mb-3 small">
+        <p class="mb-1"><b>Batch / Lot No:</b> {{ d.batch_number|default:"Not specified" }}</p>
+        <p class="mb-1"><b>Manufacturer:</b> {{ d.manufacturer|default:"Not specified" }}</p>
+        <p class="mb-1"><b>Packaging Condition:</b> {{ d.get_packaging_condition_display }}</p>
+        <p class="mb-1"><b>Storage Conditions:</b> {{ d.get_storage_conditions_display }}</p>
+        <p class="mb-0"><b>Prescription:</b> 
+            {% if d.prescription_required %}
+                <span class="text-danger fw-bold">Prescription Required (Rx)</span>
+            {% else %}
+                <span class="text-success">Over-the-Counter (OTC)</span>
+            {% endif %}
+        </p>
+    </div>
+
+    <div class="small text-secondary">
+        <p class="mb-1"><b>Quantity Available:</b> {{ d.quantity }} units</p>
+        <p class="mb-1"><b>Origin City:</b> 📍 {{ d.city }}</p>
+        <p class="mb-1"><b>Expiry Date:</b> {{ d.expiry_date }}</p>
+        <p class="mb-1"><b>Days Remaining:</b> {{ d.days_left }} days</p>
+        <p class="mb-0"><b>Safety Status:</b> {{ d.get_status_display }}</p>
+    </div>
+</div>
+
+</div>
+</div>
+</div>
+
+{% empty %}
+
+<div class="col-12">
+    <div class="empty-search">
+        <i class="bi bi-inbox fs-1 text-muted d-block mb-2"></i>
+        <h5 class="fw-bold text-dark">No Medicines Available Currently</h5>
+        <p class="text-muted small mx-auto mb-0" style="max-width: 450px;">
+            There are currently no medicines matching your search or pending approval. New donations are verified daily by the clinical safety team.
+        </p>
+    </div>
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+<!-- Bootstrap 5 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Live Instant Filter Script -->
+<script>
+const cityInput = document.getElementById('cityInput');
+const expiryFilter = document.getElementById('expiryFilter');
+const cards = document.querySelectorAll('.med-card-item');
+
+function filterMedicines() {
+    const q = cityInput.value.toLowerCase().trim();
+    const expiry = expiryFilter.value;
+
+    cards.forEach(card => {
+        const name = card.getAttribute('data-name') || '';
+        const city = card.getAttribute('data-city') || '';
+        const days = parseInt(card.getAttribute('data-days') || '999', 10);
+
+        const matchesQuery = !q || name.includes(q) || city.includes(q);
+        let matchesExpiry = true;
+        if (expiry === '7') {
+            matchesExpiry = days > 0 && days <= 7;
+        } else if (expiry === '15') {
+            matchesExpiry = days > 0 && days <= 15;
+        }
+
+        if (matchesQuery && matchesExpiry) {
+            card.style.display = '';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+if (cityInput) cityInput.addEventListener('keyup', filterMedicines);
+if (expiryFilter) expiryFilter.addEventListener('change', filterMedicines);
+</script>
+
+</body>
+</html>

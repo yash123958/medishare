@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NGO Verification Under Review · MediShare</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    body {
+        background: #f1f6fb;
+        font-family: Arial, system-ui, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+    }
+    .pending-page-wrapper {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px 60px;
+    }
+    .status-card {
+        background: #ffffff;
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        max-width: 600px;
+        width: 100%;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+    }
+    .header-banner {
+        background: linear-gradient(135deg, #0284c7, #0f766e);
+        color: white;
+        padding: 35px 30px;
+        text-align: center;
+    }
+    .header-banner h2 {
+        font-weight: 700;
+        font-size: 24px;
+        margin-bottom: 6px;
+    }
+    .content-body {
+        padding: 30px;
+    }
+    .credential-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin: 20px 0;
+    }
+    .badge-status {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        display: inline-block;
+    }
+    .badge-pending {
+        background: #fef3c7;
+        color: #92400e;
+        border: 1px solid #fde68a;
+    }
+    .badge-rejected {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+    .btn-logout {
+        background: #f1f5f9;
+        color: #475569;
+        font-weight: 600;
+        border-radius: 10px;
+        padding: 10px 24px;
+        border: 1px solid #cbd5e1;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.2s;
+    }
+    .btn-logout:hover {
+        background: #e2e8f0;
+        color: #1e293b;
+    }
+</style>
+</head>
+<body>
+
+{% include 'navbar.html' %}
+
+<div class="pending-page-wrapper">
+<div class="status-card">
+    <div class="header-banner">
+        <div style="font-size: 40px; margin-bottom: 10px;">🏛️</div>
+        <h2>NGO Accepter Verification</h2>
+        <p class="mb-0 text-white-50 small">Regulatory Compliance & Medicine Recipient Verification</p>
+    </div>
+
+    <div class="content-body">
+        {% if user.ngo_verification_status == 'REJECTED' %}
+            <div class="alert alert-danger d-flex align-items-center gap-2 mb-3" role="alert">
+                <span style="font-size: 20px;">⚠️</span>
+                <div>
+                    <b>Registration Declined:</b> Your NGO verification application could not be approved due to incomplete credentials or document mismatch.
+                </div>
+            </div>
+            <div class="text-center my-3">
+                <span class="badge-status badge-rejected">Verification Status: Application Declined</span>
+            </div>
+        {% else %}
+            <div class="text-center my-2">
+                <span class="badge-status badge-pending">⏳ Verification Status: Pending Administrative Review</span>
+            </div>
+
+            <div class="alert alert-info border-0 mt-3" style="background:#e0f2fe; color:#0369a1; font-size:14px; line-height:1.5;">
+                <b>Why is verification required?</b><br>
+                To prevent unauthorized individuals and commercial resellers from diverting free patient medicines, MediShare strictly verifies all institutional recipients before marketplace access is granted.
+            </div>
+        {% endif %}
+
+        <div class="credential-box">
+            <div class="row g-2 small">
+                <div class="col-sm-5 text-muted fw-semibold">Organization Name:</div>
+                <div class="col-sm-7 fw-bold text-dark">{{ user.ngo_name|default:user.username }}</div>
+
+                <div class="col-sm-5 text-muted fw-semibold">Registration / DARPAN ID:</div>
+                <div class="col-sm-7 fw-bold text-dark">{{ user.ngo_reg_number|default:"Not Provided" }}</div>
+
+                <div class="col-sm-5 text-muted fw-semibold">Official Phone:</div>
+                <div class="col-sm-7 text-dark">{{ user.phone|default:"Not Provided" }}</div>
+
+                <div class="col-sm-5 text-muted fw-semibold">Registered Address:</div>
+                <div class="col-sm-7 text-dark">{{ user.address|default:"Not Provided" }}</div>
+            </div>
+        </div>
+
+        <div class="text-muted small text-center mb-4">
+            ⏱️ Verification typically completes within <b>24 to 48 business hours</b>.<br>
+            For urgent hospital emergencies, please contact <b>support@medishare.org</b>.
+        </div>
+
+        <div class="text-center">
+            <a href="{% url 'logout' %}" class="btn-logout">
+                🚪 Log Out & Return Home
+            </a>
+        </div>
+    </div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

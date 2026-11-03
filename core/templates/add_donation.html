@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Donate Medicine - MediShare</title>
+
+<!-- Bootstrap 5 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    background:linear-gradient(135deg,#e3f2fd,#fce4ec);
+    font-family:'Segoe UI',sans-serif;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+}
+
+.donation-page-wrapper{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:35px 15px 60px;
+}
+
+.box{
+    width:520px;
+    max-width:100%;
+    background:white;
+    padding:34px;
+    border-radius:20px;
+    box-shadow:0 10px 30px #0002;
+}
+
+.header{
+    text-align:center;
+    margin-bottom:22px;
+}
+
+.header h2{
+    color:#0876e8;
+    margin:0 0 6px;
+    font-size:26px;
+}
+
+.header p{
+    color:#64748b;
+    font-size:13px;
+    margin:0;
+}
+
+label{
+    display:block;
+    margin:12px 0 6px;
+    font-size:13px;
+    color:#475569;
+    font-weight:600;
+}
+
+input, select, textarea{
+    width:100%;
+    padding:11px 13px;
+    border:1px solid #d5dce5;
+    border-radius:9px;
+    outline:none;
+    font-size:14px;
+    transition:border-color .2s;
+}
+
+input:focus, select:focus, textarea:focus{
+    border-color:#0876e8;
+    box-shadow:0 0 0 3px #0876e81a;
+}
+
+button{
+    width:100%;
+    padding:13px;
+    margin-top:22px;
+    background:linear-gradient(45deg,#0876e8,#36c7d9);
+    color:white;
+    border:0;
+    border-radius:10px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:opacity .2s;
+}
+
+button:hover{
+    opacity:.92;
+}
+
+.back{
+    display:block;
+    text-align:center;
+    margin-top:15px;
+    color:#64748b;
+    text-decoration:none;
+    font-size:13px;
+}
+
+.back:hover{
+    color:#0876e8;
+}
+
+.preview-container{
+    margin-top:10px;
+    text-align:center;
+    display:none;
+}
+
+.preview-container img{
+    max-height:120px;
+    border-radius:8px;
+    border:1px solid #ddd;
+    box-shadow:0 2px 8px #0001;
+}
+
+.section-title {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #0876e8;
+    font-weight: 700;
+    margin-top: 18px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 4px;
+}
+</style>
+</head>
+
+<body>
+
+{% include 'navbar.html' %}
+
+<div class="donation-page-wrapper">
+<div class="box">
+
+    <div class="header">
+        <h2>💊 Donate Medicine</h2>
+        <p>Help unexpired, verified medicines reach people in clinical need.</p>
+    </div>
+
+    {% for message in messages %}
+    <div class="alert alert-danger d-flex align-items-center gap-2 py-2 px-3 mb-3 rounded-3" style="font-size: 13px;">
+        <i class="bi bi-shield-exclamation fs-5 flex-shrink-0"></i>
+        <div>{{ message }}</div>
+    </div>
+    {% endfor %}
+
+    <form method="POST" enctype="multipart/form-data" id="donationForm">
+        {% csrf_token %}
+
+        <div class="section-title">1. Medicine Identification</div>
+
+        <label>Medicine Name & Strength</label>
+        <input
+            type="text"
+            name="medicine_name"
+            placeholder="e.g. Paracetamol 650mg, Augmentin 625 Duo"
+            required
+        >
+
+        <div class="row g-2">
+            <div class="col-6">
+                <label>Batch / Lot No. (B.No)</label>
+                <input
+                    type="text"
+                    name="batch_number"
+                    placeholder="e.g. B.No: AB4029"
+                    required
+                >
+            </div>
+            <div class="col-6">
+                <label>Manufacturer / Brand</label>
+                <input
+                    type="text"
+                    name="manufacturer"
+                    placeholder="e.g. Sun Pharma, Cipla"
+                    required
+                >
+            </div>
+        </div>
+
+        <div class="row g-2">
+            <div class="col-6">
+                <label>Quantity</label>
+                <input
+                    type="number"
+                    name="quantity"
+                    placeholder="Strips / units"
+                    min="1"
+                    required
+                >
+            </div>
+            <div class="col-6">
+                <label>Expiry Date</label>
+                <input
+                    type="date"
+                    name="expiry_date"
+                    id="expiry_date"
+                    required
+                >
+            </div>
+        </div>
+
+        <label>City of Donation</label>
+        <input
+            type="text"
+            name="city"
+            placeholder="Enter pickup city"
+            required
+        >
+
+        <div class="section-title">2. Clinical Safety & Packaging</div>
+
+        <label>Packaging Condition</label>
+        <select name="packaging_condition" id="packaging_condition" required>
+            <option value="SEALED_BLISTER">Original Sealed Blister / Foil Strip</option>
+            <option value="INTACT_BOTTLE">Unopened Bottle with Intact Factory Seal</option>
+            <option value="ORIGINAL_BOX">Original Sealed Box / Vial Pack</option>
+            <option value="OPENED_DAMAGED">Opened or Damaged Packaging (Ineligible)</option>
+        </select>
+
+        <!-- Opened Alert & Checkbox -->
+        <div class="mt-2 p-2 rounded bg-light border">
+            <label class="d-flex align-items-center gap-2 mb-0" style="cursor:pointer; font-weight:normal;">
+                <input type="checkbox" name="is_opened" id="is_opened" style="width:16px; height:16px; margin:0;">
+                <span class="small text-danger fw-semibold">Has this packaging already been opened or partially used?</span>
+            </label>
+            <div class="text-muted" style="font-size:11px; margin-top:2px;">
+                ⚠️ Safety Rule: Opened syrups, punctured blister foils, or loose tablets cannot be accepted.
+            </div>
+        </div>
+
+        <div class="mt-2 p-2 rounded bg-light border">
+            <label class="d-flex align-items-center gap-2 mb-0" style="cursor:pointer; font-weight:normal;">
+                <input type="checkbox" name="prescription_required" style="width:16px; height:16px; margin:0;">
+                <span class="small fw-semibold text-dark">Prescription Required (Rx Medication)</span>
+            </label>
+            <div class="text-muted" style="font-size:11px; margin-top:2px;">
+                Leave unchecked if this is an Over-The-Counter (OTC) medicine.
+            </div>
+        </div>
+
+        <div class="section-title">3. Photo & Authenticity Declaration</div>
+
+        <label>Packaging Photograph (Clear Batch & Expiry View)</label>
+        <input
+            type="file"
+            name="image"
+            id="image_input"
+            accept="image/*"
+            required
+            onchange="previewImage(this)"
+        >
+
+        <!-- Live image preview -->
+        <div class="preview-container" id="previewWrapper">
+            <img id="previewImg" src="#" alt="Preview">
+        </div>
+
+        <!-- Authenticity Declaration Checkbox -->
+        <div class="mt-3 p-2 rounded bg-light border">
+            <label class="d-flex align-items-start gap-2 mb-0" style="cursor:pointer; font-weight:normal;">
+                <input type="checkbox" name="authenticity_declared" checked required style="width:16px; height:16px; margin-top:3px;">
+                <span class="small fw-semibold text-dark">
+                    I certify that this medicine is genuine, unadulterated, stored per manufacturer standards, and sealed.
+                </span>
+            </label>
+        </div>
+
+        <button type="submit" id="submitBtn">
+            💙 Submit Medicine for Safety Verification
+        </button>
+    </form>
+
+    <a href="/dashboard/" class="back">
+        ← Back to Dashboard
+    </a>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Prevent past expiry dates
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('expiry_date').min = today;
+
+// Instant photo preview
+function previewImage(input) {
+    const previewWrapper = document.getElementById('previewWrapper');
+    const previewImg = document.getElementById('previewImg');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            previewWrapper.style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// Client-side quick check for opened/damaged
+const isOpened = document.getElementById('is_opened');
+const pkgCondition = document.getElementById('packaging_condition');
+const form = document.getElementById('donationForm');
+
+form.onsubmit = function(e) {
+    if (isOpened.checked || pkgCondition.value === 'OPENED_DAMAGED') {
+        alert("Clinical Safety Restriction: In accordance with medical donation regulations, opened or damaged medicines cannot be accepted.");
+        e.preventDefault();
+        return false;
+    }
+};
+</script>
+
+</body>
+</html>

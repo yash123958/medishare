@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediShare - Medicine Donation & Healthcare Network</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #7ec8c8, #4caf93);
+            color: #0a2540;
+            text-align: center;
+            padding: 85px 20px 115px;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 46px;
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .hero h1 span {
+            color: #0876e8;
+            background: linear-gradient(135deg, #0284c7, #0876e8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            margin: 18px auto 0;
+            font-size: 18px;
+            color: #1c3d5a;
+            max-width: 680px;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .btn-main {
+            background: #0876e8;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 10px;
+            margin-right: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(8, 118, 232, 0.3);
+        }
+
+        .btn-main:hover {
+            background: #065eb8;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(8, 118, 232, 0.4);
+        }
+
+        .btn-light-custom {
+            background: white;
+            color: #0a2540;
+            border-radius: 10px;
+            padding: 12px 26px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .btn-light-custom:hover {
+            background: #f8fafc;
+            color: #0876e8;
+            transform: translateY(-2px);
+        }
+
+        .badge-custom {
+            background: rgba(255, 255, 255, 0.9);
+            color: #0f766e;
+            padding: 6px 16px;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0.03em;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        /* Features Floating Cards */
+        .features {
+            margin-top: -55px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .feature-card {
+            border-radius: 16px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+            padding: 28px 24px;
+            height: 100%;
+            background: #ffffff;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
+        }
+
+        .icon-medallion {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h5 {
+            font-weight: 700;
+            font-size: 1.18rem;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            color: #64748b;
+            margin-bottom: 0;
+            font-size: 0.95rem;
+            line-height: 1.55;
+        }
+
+        /* Stats Ribbon */
+        .stats-ribbon {
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 35px 0;
+            margin-top: 50px;
+        }
+
+        .stat-item h3 {
+            font-weight: 800;
+            font-size: 2.2rem;
+            color: #0876e8;
+            margin-bottom: 2px;
+            letter-spacing: -0.02em;
+        }
+
+        .stat-item p {
+            color: #64748b;
+            font-weight: 600;
+            font-size: 0.92rem;
+            margin: 0;
+        }
+
+        /* Step Section */
+        .step-section {
+            padding: 70px 0;
+        }
+
+        .step-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 32px 24px;
+            height: 100%;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            transition: all 0.2s ease;
+        }
+
+        .step-box:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 8px 24px rgba(8, 118, 232, 0.08);
+            transform: translateY(-3px);
+        }
+
+        .step-badge {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .step-box h4 {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .step-box p {
+            color: #64748b;
+            font-size: 0.94rem;
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+
+        /* Safety Highlights */
+        .safety-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 22px;
+            height: 100%;
+        }
+
+        .safety-card h6 {
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .safety-card p {
+            font-size: 0.88rem;
+            color: #64748b;
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
+
+        /* CTA Ribbon */
+        .cta-banner {
+            background: linear-gradient(135deg, #0284c7, #0d9488);
+            border-radius: 20px;
+            padding: 45px 30px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(2, 132, 199, 0.25);
+            margin: 30px 0 70px;
+        }
+
+        .cta-banner h2 {
+            font-weight: 800;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .cta-banner p {
+            font-size: 1.05rem;
+            max-width: 600px;
+            margin: 0 auto 25px;
+            opacity: 0.95;
+        }
+
+        /* Footer */
+        .site-footer {
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            padding: 45px 0 25px;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .footer-logo {
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: #0f172a;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .site-footer a {
+            color: #475569;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .site-footer a:hover {
+            color: #0876e8;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 60px 15px 85px;
+            }
+            .hero h1 {
+                font-size: 32px;
+            }
+            .features {
+                margin-top: -35px;
+            }
+            .btn-main, .btn-light-custom {
+                display: block;
+                width: 100%;
+                margin: 8px 0;
+            }
+            .stat-item {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+{% include 'navbar.html' %}
+
+<!-- Hero Section -->
+<div class="hero">
+    <div class="badge-custom">
+        <i class="bi bi-shield-check text-success"></i> Verified Non-Profit Healthcare Network
+    </div>
+
+    <h1>
+        Turn unused medicines into <br>
+        <span>second chances.</span>
+    </h1>
+
+    <p>
+        Safe medicine donation connecting compassionate donors with verified NGOs to help patients in clinical need — never peer-to-peer, always professionally inspected.
+    </p>
+
+    <div class="mt-4">
+        {% if user.is_authenticated %}
+            {% if user.is_superuser %}
+                <a href="/admin-dashboard/" class="btn btn-main">🛡️ Go to Admin Safety Portal</a>
+            {% elif user.role == 'NGO' %}
+                <a href="/ngo/" class="btn btn-main">🏥 Browse Medicine Marketplace</a>
+            {% else %}
+                <a href="/donate/" class="btn btn-main">+ Donate Medicine</a>
+                <a href="/dashboard/" class="btn btn-light-custom">My Dashboard</a>
+            {% endif %}
+        {% else %}
+            <a href="/donate/" class="btn btn-main">+ Donate Medicine</a>
+            <a href="/register/" class="btn btn-light-custom">Register as NGO</a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Features Floating Cards -->
+<div class="container features">
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="icon-medallion" style="background:#e0f2fe; color:#0369a1;">
+                    <i class="bi bi-shield-fill-check"></i>
+                </div>
+                <h5>Clinical Safety Verification</h5>
+                <p>Every medicine batch is inspected for uncompromised, factory-sealed blister packaging and safe expiry dates before listing.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="icon-medallion" style="background:#fce7f3; color:#be185d;">
+                    <i class="bi bi-building-check"></i>
+                </div>
+                <h5>Authorized NGOs Only</h5>
+                <p>Commercial resellers are strictly locked out. Only government and DARPAN-registered institutions receive access.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="icon-medallion" style="background:#dcfce7; color:#15803d;">
+                    <i class="bi bi-truck"></i>
+                </div>
+                <h5>6-Stage Consignment Tracking</h5>
+                <p>Track donations with full visibility from packing and carrier dispatch to final clinical dispensary delivery.</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Live Impact Stats Ribbon -->
+<div class="stats-ribbon">
+    <div class="container">
+        <div class="row text-center g-3">
+            <div class="col-6 col-md-3 stat-item">
+                <h3>{{ total_donated }}+</h3>
+                <p>Medicines Listed & Donated</p>
+            </div>
+            <div class="col-6 col-md-3 stat-item">
+                <h3>{{ verified_ngos }}+</h3>
+                <p>Verified NGO Partners</p>
+            </div>
+            <div class="col-6 col-md-3 stat-item">
+                <h3>{{ cities_covered }}+</h3>
+                <p>Cities Covered</p>
+            </div>
+            <div class="col-6 col-md-3 stat-item">
+                <h3>100%</h3>
+                <p>Sealed Packaging Safety</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- "How It Works" 3 Steps Section -->
+<div class="container step-section">
+    <div class="text-center mb-5">
+        <span class="badge bg-primary-subtle text-primary fw-bold text-uppercase px-3 py-2 rounded-pill small">Simple & Safe</span>
+        <h2 class="fw-bold mt-2 text-dark">How MediShare Works in 3 Steps</h2>
+        <p class="text-muted mx-auto" style="max-width: 600px;">
+            A transparent and compliant redistribution pipeline ensuring unexpired medications safely reach those in need.
+        </p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="step-box">
+                <span class="step-badge">Step 1 &bull; Donor Lists</span>
+                <h4>💊 List Sealed Medicines</h4>
+                <p>
+                    Donors enter medicine details, batch numbers, expiry dates, and upload a clear photo of the intact packaging.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="step-box">
+                <span class="step-badge" style="background:#fef3c7; color:#92400e;">Step 2 &bull; Admin Verifies</span>
+                <h4>🔬 Clinical Safety Review</h4>
+                <p>
+                    Admins inspect packaging integrity, confirm the medicine has at least valid shelf-life, and approve it to the marketplace.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="step-box">
+                <span class="step-badge" style="background:#dcfce7; color:#166534;">Step 3 &bull; NGO Distributes</span>
+                <h4>🏥 NGO Delivery to Patients</h4>
+                <p>
+                    Authorized NGOs request needed medicines for free charitable care with real-time consignment tracking until delivery.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Safety & Regulatory Highlights -->
+    <div class="row g-3 mt-4">
+        <div class="col-md-3 col-6">
+            <div class="safety-card">
+                <h6><i class="bi bi-box-seam text-primary"></i> Zero Open-Box</h6>
+                <p>Only factory-sealed blisters and intact bottles are accepted.</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="safety-card">
+                <h6><i class="bi bi-snow text-info"></i> Cold Chain Alerts</h6>
+                <p>Special temperature tracking for insulin and sensitive medicines.</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="safety-card">
+                <h6><i class="bi bi-receipt text-success"></i> Printable Receipts</h6>
+                <p>Download certified donation vouchers for each verified batch.</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="safety-card">
+                <h6><i class="bi bi-shield-lock text-warning"></i> Gated Recipient Pool</h6>
+                <p>Commercial resellers strictly prohibited; NGOs must verify licenses.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Banner -->
+<div class="container">
+    <div class="cta-banner">
+        <h2>Have Unused, Unexpired Medicines?</h2>
+        <p>
+            Don't let valuable healthcare resources go to waste. Put your medicines to life-saving use in just a few minutes.
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="/donate/" class="btn btn-light fw-bold px-4 py-2 text-primary" style="border-radius:10px;">
+                + Donate Medicine Now
+            </a>
+            <a href="/register/" class="btn btn-outline-light fw-bold px-4 py-2" style="border-radius:10px;">
+                Register Your NGO
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Modern Platform Footer -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="row g-4 align-items-center mb-4">
+            <div class="col-md-5">
+                <a href="/" class="footer-logo">
+                    <span>💊 MediShare</span>
+                </a>
+                <p class="mb-0 text-muted" style="max-width: 420px; font-size: 0.88rem; line-height: 1.6;">
+                    An intermediated medical redistribution platform connecting compassionate medicine donors with verified NGOs to save lives and eliminate clinical waste.
+                </p>
+            </div>
+            <div class="col-md-3 col-6">
+                <h6 class="fw-bold text-dark mb-3">Quick Links</h6>
+                <ul class="list-unstyled d-flex flex-column gap-2 mb-0" style="font-size: 0.88rem;">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/donate/">Donate Medicine</a></li>
+                    <li><a href="/login/">Sign In</a></li>
+                    <li><a href="/register/">NGO Registration</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 col-6">
+                <h6 class="fw-bold text-dark mb-3">Compliance & Safety</h6>
+                <ul class="list-unstyled d-flex flex-column gap-2 mb-0" style="font-size: 0.88rem;">
+                    <li><i class="bi bi-check2 text-success me-1"></i> Zero-Opened Policy</li>
+                    <li><i class="bi bi-check2 text-success me-1"></i> Verified Non-Profit Only</li>
+                    <li><i class="bi bi-check2 text-success me-1"></i> Live Consignment Stepper</li>
+                </ul>
+            </div>
+        </div>
+
+        <hr style="border-color: #e2e8f0;">
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 pt-2 small text-muted">
+            <div>
+                &copy; 2026 MediShare Healthcare Platform &bull; Certified Intermediated Donation Network
+            </div>
+            <div>
+                Built for public healthcare impact &bull; Free & Open Access
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

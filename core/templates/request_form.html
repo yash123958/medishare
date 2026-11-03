@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Request Medicine - MediShare</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    background:linear-gradient(135deg,#e3f2fd,#fce4ec);
+    font-family:'Segoe UI',sans-serif;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+}
+
+.request-page-wrapper{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:25px 15px 50px;
+}
+
+.box{
+    width:480px;
+    max-width:100%;
+    background:white;
+    padding:32px;
+    border-radius:20px;
+    box-shadow:0 10px 30px #0002;
+}
+
+.header{
+    text-align:center;
+    margin-bottom:22px;
+}
+
+.header h2{
+    color:#0876e8;
+    margin:0 0 6px;
+    font-size:24px;
+}
+
+.header p{
+    color:#64748b;
+    font-size:13px;
+    margin:0;
+}
+
+label{
+    display:block;
+    margin:12px 0 6px;
+    font-size:13px;
+    color:#475569;
+    font-weight:600;
+}
+
+input, textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #d5dce5;
+    border-radius:9px;
+    outline:none;
+    font-size:14px;
+}
+
+input:focus, textarea:focus{
+    border-color:#0876e8;
+    box-shadow:0 0 0 3px #0876e81a;
+}
+
+button{
+    width:100%;
+    padding:13px;
+    margin-top:20px;
+    background:linear-gradient(45deg,#36d1dc,#5b86e5);
+    color:white;
+    border:0;
+    border-radius:10px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:.92;
+}
+
+.back{
+    display:block;
+    text-align:center;
+    margin-top:15px;
+    color:#64748b;
+    text-decoration:none;
+    font-size:13px;
+}
+
+.info-card{
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:10px;
+    padding:14px;
+    margin-bottom:15px;
+    font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+{% include 'navbar.html' %}
+
+<div class="request-page-wrapper">
+<div class="box">
+
+    <div class="header">
+        <h2>💊 Request Medicine</h2>
+        <p>Allocate unexpired supplies for clinical care</p>
+    </div>
+
+    <!-- Medicine Summary Card -->
+    <div class="info-card">
+        <div class="fw-bold fs-6 text-dark mb-1">{{ donation.medicine_name }}</div>
+        <div class="text-muted">Available: <strong>{{ donation.quantity }} units</strong></div>
+        <div class="text-muted">Origin: <strong>📍 {{ donation.city }}</strong> &bull; Expiry: <strong>{{ donation.expiry_date }}</strong></div>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Quantity to Request</label>
+        <input
+            type="number"
+            name="quantity"
+            min="1"
+            max="{{ donation.quantity }}"
+            value="1"
+            required
+        >
+
+        <label>Reason / Clinical Purpose</label>
+        <textarea
+            name="reason"
+            rows="3"
+            placeholder="Why do you need this medicine?"
+            required
+        ></textarea>
+
+        <button type="submit">
+            Submit Request
+        </button>
+    </form>
+
+    <a href="/ngo/" class="back">
+        ← Back to NGO Dashboard
+    </a>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
